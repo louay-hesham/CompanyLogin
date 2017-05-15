@@ -11,7 +11,7 @@ org 100h
 DATA2 DB  5,?,5 DUP (?)       
 DATA3 DB 'ENTER YOUR ID: ','$'        
 DATA1 DB '0123456789ABCDEFabcdef?'
-DATA4 DB 'EROR:THE ID NUMBER MUST BE 4-BIT HEX','$'
+DATA4 DB 'ERROR:THE ID NUMBER MUST BE 4-BIT HEX','$'
 DATA5 DB ''WRONG ENTRY'Your ID must contain data from 0-->9 or A-->F','$'   
 DATA6 DW 0AAAAH,0BBBBH,0CCCCH,0DDDDH,0EEEEH,0FFFFH,1111H,2222H,3333H,4444H
 DATA7 DW 5555H,6666H,7777H,8888H,9999H,0100H,0200H,0300H,0400H,5667H
@@ -25,19 +25,7 @@ DATAD DB '******WELCOME******','$'
 DATAE DB 'WRONG PASSWORD,TRY AGAIN','$'     
 DATAF DB 00H
 DATAG DB '---------------------------------------------------------------','$'
-DATAH DB 'WHAT DO YOU WANT','$'
-DATAI DB '(1) Enter your ID and PASSWORD','$'
-DATAJ DB '(2) Change your Password','$'
-DATAU DB 'Your choice is (1/2) ','$'
 DATAT DB 'EROR:WRONG CHOICE','$'       
-DATAK DB 2,?,2 DUP (?) 
-DATAR DB 'ENTER YOUR ID: ','$'
-DATAQ DB 'ENTER OLD PASSWORD: ','$'
-DATAY DB 'ENTER NEW PASSWORD: ','$'
-DATAO DB 'CONFIRM YOUR PASSWORD: ','$'
-DATAV DB 'YOUR PASSWORD IS SUCCESFULLY CHANGED','$' 
-DATAW DB 'WRONG ENTRY!! PLEASE,RE-ENTER NEW PASSWORD: ','$'
-DATAZ DW ? 
 ;-----------------
                .CODE
 MAIN             PROC FAR      
@@ -48,13 +36,6 @@ MAIN             PROC FAR
                  CALL CLEAR              ;Call CLEAR screen procedure
                  MOV  BP,OFFSET DATAF    ;Mov Offset dataf to BP to use it in setting cursor
 START:           CALL SETCURSOR          ;Call SETCURSOR procedure 
-                 CALL ENTRY              ;Call ENTRY, elmsg ely 7i2olk fiha enta 3aiz eh!! 
-                 CALL GETCHOICE          ;Call GETCHOICE, 7ia5od mnk e5tiark eh 1 or 2
-                 CALL CHECKNO            ;Call CHECKNO ,hishof elrkam ely md5lo 1 aw 2 wla 7aga tania !!
-                 CALL SETCURSOR          ;Call SETCURSOR, 3mltha tany 3shan yzbt elklam ,ynzl satr gdid w kda :D
-                 CALL ENTERORCHANGE      ;Call ENTERORCHANGE, hishofk en kont 3aiz td5l elPASSWORD wla t3'iro
-                 CALL HANDLE             ;Call HANDLE, elproc di bt5lik t-handle elmwdo3, y3ny enter old pass,re-enter ....
-                 CALL CONVERT            ;Call CONVERT , elproc di bt3'ir elpassword
 ID:              CALL WELCOME            ;Call WELCOME,, lw enta e5trt enk 3aiz td5al elpassword, di awl 7aga htzhrlk
                  CALL GET_IN             ;Call GET_IN , bta5od mnk elpassword
                  CALL NO.LET             ;Call NO.LET , bishof en kan elrakm ely md5lo 4 arkam wla a2l
@@ -91,43 +72,6 @@ CLEAR            PROC
                  RET
 CLEAR            ENDP
 ;----------------     
-ENTRY            PROC
-                 MOV AH,09H
-                 MOV DX,OFFSET DATAH
-                 INT 21H
-                 CALL SETCURSOR
-                 MOV AH,09H
-                 MOV DX,OFFSET DATAI
-                 INT 21H
-                 CALL SETCURSOR
-                 MOV AH,09H
-                 MOV DX,OFFSET DATAJ
-                 INT 21H  
-                 CALL SETCURSOR
-                 MOV AH,09H
-                 MOV DX,OFFSET DATAU
-                 INT 21H
-                 RET
-ENTRY            ENDP
-;--------------
-GETCHOICE        PROC
-                 MOV AH,0AH
-                 MOV DX,OFFSET DATAK
-                 INT 21H
-                 RET
-GETCHOICE        ENDP
-;-----------------
-CHECKNO          PROC
-                 LEA BX,DATAK+2
-                 CMP [BX],31H
-                 JZ  RETURN2
-                 CMP [BX],32H
-                 JZ  RETURN2
-                 CALL EROR
-RETURN2:         CALL 5AT
-                 RET
-CHECKNO          ENDP
-;---------------
 EROR             PROC
                  CALL SETCURSOR
                  MOV AH,09H
@@ -294,56 +238,6 @@ WRONG_PW         ENDP
                  RET
 5AT              ENDP
 ;-----------       
-ENTERORCHANGE    PROC
-                 LEA BX,DATAK+2
-                 CMP [BX],31H
-                 JZ  ID
-                 RET
-ENTERORCHANGE    ENDP  
-;--------------     
-HANDLE           PROC
-                 MOV AH,09H
-                 MOV DX,OFFSET DATAR
-                 INT 21H
-                 CALL GET_IN 
-                 CALL NO.LET
-                 CALL CHECK               ;check if exists
-                 MOV  SI,OFFSET DATA2+2
-                 CALL PUTIDINAX           ;PUT ID IN AX
-                 CALL CHECKID
-                 ;MOV BX,OFFSET DATAZ
-                 MOV BX,OFFSET DATAZ   
-                 LEA DX,[DI]       
-                 MOV [BX],DX
-                 CALL SETCURSOR
-                 MOV AH,09H
-                 MOV DX,OFFSET DATAQ
-                 INT 21H
-                 MOV AH,0AH
-                 MOV DX,OFFSET DATAC
-                 INT 21H        
-                 MOV  SI,OFFSET DATAC+2
-                 CALL PUTIDINAX           ;PUT ID IN AX
-                 CALL CHECKPASS
-                 CALL SETCURSOR 
-                 MOV AH,09H
-                 MOV DX,OFFSET DATAY
-                 INT 21H
-AGAIN3:          MOV AH,0AH
-                 MOV DX,OFFSET DATAC
-                 INT 21H  
-                 CALL SETCURSOR       
-                 
-                 MOV AH,09H
-                 MOV DX,OFFSET DATAO
-                 INT 21H
-                 MOV AH,0AH
-                 MOV DX,OFFSET DATAP
-                 INT 21H 
-                 CALL CHECKCONFIRM
-                 RET
-HANDLE           ENDP
-;--------------- 
 CHECKCONFIRM     PROC  
                  CLD
                  MOV SI,OFFSET DATAC+2
@@ -351,30 +245,8 @@ CHECKCONFIRM     PROC
                  MOV CX,05H
                  REPE CMPSB 
                  CMP CX,0000H
-                 JNZ  PUTITAGAIN
                  RET
-PUTITAGAIN:      ;CALL 5AT
-                 CALL SETCURSOR
-                 MOV AH,09H
-                 MOV DX,OFFSET DATAW
-                 INT 21H
-                 JMP AGAIN3 
 CHECKCONFIRM     ENDP
-;--------------  
-CONVERT          PROC
-                 MOV SI,OFFSET DATAP+2
-                 CALL PUTIDINAX
-                 MOV BX,OFFSET DATAZ
-                 ADD [BX],38
-                 MOV DI,[BX]          
-                 MOV [DI],AX
-                 CALL SETCURSOR
-                 MOV AH,09H
-                 MOV DX,OFFSET DATAV
-                 INT 21H 
-                 CALL 5AT
-                 JMP START   
-CONVERT          ENDP          
 ;-------------
                  END MAIN
 
