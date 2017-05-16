@@ -11,7 +11,7 @@ org 100h
 DATA2 DB  5,?,5 DUP (?)       
 DATA3 DB 'ENTER YOUR ID: ','$'        
 DATA1 DB '0123456789ABCDEFabcdef?'
-DATA4 DB 'ERROR:THE ID NUMBER MUST BE 4-BIT HEX','$'
+DATA4 DB 'ERROR:THE ID NUMBER MUST BE 4 DIGIT HEXA','$'
 DATA5 DB ''WRONG ENTRY'Your ID must contain data from 0-->9 or A-->F','$'   
 DATA6 DW 0AAAAH,0BBBBH,0CCCCH,0DDDDH,0EEEEH,0FFFFH,1111H,2222H,3333H,4444H
 DATA7 DW 5555H,6666H,7777H,8888H,9999H,0100H,0200H,0300H,0400H,5667H
@@ -19,13 +19,11 @@ DATA8 DW 1H,2H,3H,4H,5H,6H,0AH,0BH,0CH,0DH
 DATA9 DW 0FH,0EH,1H,2H,3H,0AH,0BH,0CH,0DH,0AH 
 DATAA DB 'Your ID is wrong, Please try again!!','$' 
 DATAB DB 'ENTER YOUR PASSWORD: ','$'   
-DATAC DB 5,?,5 DUP (?)  
-DATAP DB 5,?,5 DUP (?)        
-DATAD DB '******WELCOME******','$' 
+DATAC DB 5,?,5 DUP (?)        
+DATAD DB 'LOGIN SUCCESSFUL!','$' 
 DATAE DB 'WRONG PASSWORD,TRY AGAIN','$'     
 DATAF DB 00H
-DATAG DB '---------------------------------------------------------------','$'
-DATAT DB 'EROR:WRONG CHOICE','$'       
+DATAG DB '---------------------------------------------------------------','$'    
 ;-----------------
                .CODE
 MAIN             PROC FAR      
@@ -33,18 +31,17 @@ MAIN             PROC FAR
                  MOV DS,AX               ;Mov AX to DS
                  MOV ES,AX               ;Make DS and ES OVERLAPPED
                  MOV  DH,00H             ;Initialize DH With zeros
-                 CALL CLEAR              ;Call CLEAR screen procedure
                  MOV  BP,OFFSET DATAF    ;Mov Offset dataf to BP to use it in setting cursor
 START:           CALL SETCURSOR          ;Call SETCURSOR procedure 
-ID:              CALL WELCOME            ;Call WELCOME,, lw enta e5trt enk 3aiz td5al elpassword, di awl 7aga htzhrlk
-                 CALL GET_IN             ;Call GET_IN , bta5od mnk elpassword
+ID:              CALL WELCOME            ;Call WELCOME
+                 CALL GET_IN             ;Call GET_IN , bta5od el ID
                  CALL NO.LET             ;Call NO.LET , bishof en kan elrakm ely md5lo 4 arkam wla a2l
                  CALL CHECK              ;Call CHECK , bi-check iza kan elrakm ely d5lto in range (0-->9 aw a-->f aw A-->F) wla la2
                  MOV  SI,OFFSET DATA2+2  ;Initialize SI to point to the ID data in memory
                  CALL PUTIDINAX          ;Call PUTIDINAX, bt7ot el ID ely gy mn elmemory f AX 
                  CALL CHECKID            ;Call CHECKID , bi-check 3la el ID en kan sa7 wla 3'lt
-                 CALL SETCURSOR          ;Call SETCURSOR, 3mltha tany 3shan yzbt elklam ,ynzl satr gdid w kda :D
-                 CALL GETPASS            ;Call GETPASS ,elproc di hta5od mn eluser elpassword
+                 CALL SETCURSOR          ;Call SETCURSOR, 3mltha tany 3shan yzbt elklam ,ynzl satr gdid w kda
+                 CALL GETPASS            ;Call GETPASS ,elproc di hta5od mn el user el password
                  MOV  SI,OFFSET DATAC+2  ;Initialize, SI to point to datac in memory
                  CALL PUTIDINAX          ;Call PUTIDINAX, bt7ot el PASSWORD ely gy mn elmemory f AX 
                  CALL CHECKPASS          ;Call CHECKPASS, bi-check en kan elpassword sa7 wla 3'lt
@@ -61,27 +58,7 @@ WRONGPASS:       CALL SETCURSOR
 OPERA:           MOV  AH,4CH
                  INT 21H
 MAIN             ENDP        
-;----------------
-CLEAR            PROC   
-                 MOV AX,0600H
-                 MOV BH,07
-                 MOV CX,0000
-                 MOV DH,24
-                 MOV DL,79
-                 INT 10H
-                 RET
-CLEAR            ENDP
 ;----------------     
-EROR             PROC
-                 CALL SETCURSOR
-                 MOV AH,09H
-                 MOV DX,OFFSET DATAT
-                 INT 21H
-                 CALL 5AT
-                 JMP START
-                 RET
-EROR             ENDP
-;--------------
 SETCURSOR        PROC 
                  MOV AH,02H
                  MOV BH,00
@@ -207,7 +184,7 @@ GETPASS          ENDP
 ;-------------
 CHECKPASS        PROC   
                  MOV BX,AX
-                 ADD DI,38            ; If exist, jump to the password which equivalent to thad ID
+                 ADD DI,38            ; If exist, jump to the password which equivalent to that ID
                  CMP BX,[DI]          ; Check if the password correct or not
                  JNZ WRONGPASS 
                  RET
