@@ -124,19 +124,17 @@ WRONGENTRY       ENDP
 ;--------------
 PUTIDINAX          PROC                  
                  MOV CX,04H
-AGAIN2:          CMP [SI],39H
-                 JZ  ZERO
+AGAIN2:          CMP [SI],40H
                  JB  ZERO         
                  JA  OVER    
 ZERO:            SUB [SI],30H
                  JMP STAR         
-OVER:            CMP [SI],70
-                 JZ  CAPITAL
+OVER:            CMP [SI],47H
                  JB  CAPITAL
                  JA  SMALL
-CAPITAL:         SUB [SI],55
+CAPITAL:         SUB [SI],37H
                  JMP STAR 
-SMALL:           SUB [SI],87
+SMALL:           SUB [SI],57H
                  JMP STAR       
 STAR:            INC SI 
                  DEC CX   
@@ -149,22 +147,21 @@ STAR:            INC SI
                  SHL AX,4
                  OR  AX,BX  
                  RET
-PUTIDINAX          ENDP
+PUTIDINAX        ENDP
 ;--------------
 PUTPASSINAL      PROC                  
-                 CMP [SI],39H
-                 JZ  ZEROP
+                 CMP [SI],40H
                  JB  ZEROP         
                  JA  OVERP    
 ZEROP:           SUB [SI],30H
                  JMP STARP         
-OVERP:           CMP [SI],70
+OVERP:           CMP [SI],47H
                  JZ  CAPITALP
                  JB  CAPITALP
                  JA  SMALLP
-CAPITALP:        SUB [SI],55
+CAPITALP:        SUB [SI],37H
                  JMP STARP 
-SMALLP:          SUB [SI],87
+SMALLP:          SUB [SI],57H
                  JMP STARP       
 STARP:           MOV AL,[SI]
                  RET
