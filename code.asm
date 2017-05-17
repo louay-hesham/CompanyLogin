@@ -13,10 +13,8 @@ DATA3 DB 'ENTER YOUR ID: ','$'
 DATA1 DB '0123456789ABCDEFabcdef?'
 DATA4 DB 'ERROR:THE ID NUMBER MUST BE 4 DIGIT HEXA','$'
 DATA5 DB ''WRONG ENTRY'Your ID must contain data from 0-->9 or A-->F','$'   
-DATA6 DW 0AAAAH,0BBBBH,0CCCCH,0DDDDH,0EEEEH,0FFFFH,1111H,2222H,3333H,4444H
-DATA7 DW 5555H,6666H,7777H,8888H,9999H,0100H,0200H,0300H,0400H,5667H
-DATA8 DW 1H,2H,3H,4H,5H,6H,0AH,0BH,0CH,0DH
-DATA9 DW 0FH,0EH,1H,2H,3H,0AH,0BH,0CH,0DH,0AH 
+DATA6 DW 0AAAAH,0BBBBH,0CCCCH,0DDDDH,0EEEEH,0FFFFH,1111H,2222H,3333H,4444H,5555H,6666H,7777H,8888H,9999H,0100H,0200H,0300H,0400H,5667H
+DATA8 DW 1H,2H,3H,4H,5H,6H,0AH,0BH,0CH,0DH,0FH,0EH,1H,2H,3H,0AH,0BH,0CH,0DH,0AH
 DATAA DB 'Your ID is wrong, Please try again!!','$' 
 DATAB DB 'ENTER YOUR PASSWORD: ','$'   
 DATAC DB 5,?,5 DUP (?)        
@@ -38,19 +36,19 @@ ID:              CALL WELCOME            ;Call WELCOME
                  CALL NO.LET             ;Call NO.LET , bishof en kan elrakm ely md5lo 4 arkam wla a2l
                  CALL CHECK              ;Call CHECK , bi-check iza kan elrakm ely d5lto in range (0-->9 aw a-->f aw A-->F) wla la2
                  MOV  SI,OFFSET DATA2+2  ;Initialize SI to point to the ID data in memory
-                 CALL PUTIDINAX          ;Call PUTIDINAX, bt7ot el ID ely gy mn elmemory f AX 
+                 CALL PUTINAX            ;Call PUTIDINAX, bt7ot el ID ely gy mn elmemory f AX 
                  CALL CHECKID            ;Call CHECKID , bi-check 3la el ID en kan sa7 wla 3'lt
                  CALL SETCURSOR          ;Call SETCURSOR, 3mltha tany 3shan yzbt elklam ,ynzl satr gdid w kda
                  CALL GETPASS            ;Call GETPASS ,elproc di hta5od mn el user el password
                  MOV  SI,OFFSET DATAC+2  ;Initialize, SI to point to datac in memory
-                 CALL PUTIDINAX          ;Call PUTIDINAX, bt7ot el PASSWORD ely gy mn elmemory f AX 
+                 CALL PUTINAX            ;Call PUTIDINAX, bt7ot el ID ely gy mn elmemory f AX 
                  CALL CHECKPASS          ;Call CHECKPASS, bi-check en kan elpassword sa7 wla 3'lt
                  CALL SETCURSOR          ;Call SETCURSOR, bizbt elklam ely bizhr 3la elDOS
                  CALL ENTER              ;Call ENTER, lw elpassword sa7 bitl3lo gomla 3la elshasha
 NO_EROR:         CALL SETCURSOR          ;As shown before
-                 CALL NOEROR             ;check if the entered nmber is less than 4!!
+                 CALL NOEROR             ;the entered nmber is less than 4!!
 WR_ENT:          CALL SETCURSOR          ;As shown before
-                 CALL WRONGENTRY         ;check if the number is between 0 --> 9 or a --> f or A --> F
+                 CALL WRONGENTRY         ;the number is between 0 --> 9 or a --> f or A --> F
 WRONGID:         CALL SETCURSOR
                  CALL WRONG_ID
 WRONGPASS:       CALL SETCURSOR
@@ -124,7 +122,7 @@ WRONGENTRY       PROC
                  RET
 WRONGENTRY       ENDP
 ;--------------
-PUTIDINAX        PROC                  
+PUTINAX          PROC                  
                  MOV CX,04H
 AGAIN2:          CMP [SI],39H
                  JZ  ZERO
@@ -151,7 +149,7 @@ STAR:            INC SI
                  SHL AX,4
                  OR  AX,BX  
                  RET
-PUTIDINAX        ENDP
+PUTINAX          ENDP
 ;--------------         
 CHECKID          PROC
                  MOV CX,21            ; Set the counter to 21 decimal
