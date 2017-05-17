@@ -108,7 +108,7 @@ NOEROR           PROC
                  MOV AH,09H
                  MOV DX,OFFSET DATA4
                  INT 21H  
-                 CALL 5AT
+                 CALL LINE
                  JMP START
                  RET
 NOEROR           ENDP
@@ -117,7 +117,7 @@ WRONGENTRY       PROC
                  MOV AH,09H
                  MOV DX,OFFSET DATA5
                  INT 21H 
-                 CALL 5AT
+                 CALL LINE
                  JMP START
                  RET
 WRONGENTRY       ENDP
@@ -181,7 +181,7 @@ WRONG_ID         PROC
                  MOV AH,09H
                  MOV DX,OFFSET DATAA
                  INT 21H     
-                 CALL 5AT
+                 CALL LINE
                  JMP START
                  RET
 WRONG_ID         ENDP
@@ -208,7 +208,7 @@ ENTER            PROC
                  MOV AH,09H
                  MOV DX,OFFSET DATAD
                  INT 21H 
-                 CALL 5AT 
+                 CALL LINE 
                  JMP START
                  RET
 ENTER            ENDP
@@ -217,17 +217,17 @@ WRONG_PW         PROC
                  MOV AH,09H
                  MOV DX,OFFSET DATAE
                  INT 21H   
-                 CALL 5AT
+                 CALL LINE
                  JMP START
 WRONG_PW         ENDP     
 ;------------  
-5AT              PROC  
+LINE             PROC  
                  CALL SETCURSOR
                  MOV AH,09H
                  MOV DX,OFFSET DATAG
                  INT 21H
                  RET
-5AT              ENDP
+LINE             ENDP
 ;-----------       
 CHECKCONFIRM     PROC  
                  CLD
