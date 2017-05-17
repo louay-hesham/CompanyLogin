@@ -41,7 +41,7 @@ ID:              CALL WELCOME            ;Call WELCOME
                  CALL SETCURSOR          ;Call SETCURSOR, 3mltha tany 3shan yzbt elklam ,ynzl satr gdid w kda
                  CALL GETPASS            ;Call GETPASS ,elproc di hta5od mn el user el password
                  MOV  SI,OFFSET DATAC+2  ;Initialize, SI to point to datac in memory
-                 CALL PUTPASSINAX        ;Call PUTINAX, bt7ot el password ely gy mn elmemory f AX 
+                 CALL PUTPASSINAL        ;Call PUTINAX, bt7ot el password ely gy mn elmemory f AX 
                  CALL CHECKPASS          ;Call CHECKPASS, bi-check en kan elpassword sa7 wla 3'lt
                  CALL SETCURSOR          ;Call SETCURSOR, bizbt elklam ely bizhr 3la elDOS
                  CALL ENTER              ;Call ENTER, lw elpassword sa7 bitl3lo gomla 3la elshasha
@@ -151,7 +151,7 @@ STAR:            INC SI
                  RET
 PUTIDINAX          ENDP
 ;--------------
-PUTPASSINAX      PROC                  
+PUTPASSINAL      PROC                  
                  CMP [SI],39H
                  JZ  ZEROP
                  JB  ZEROP         
@@ -168,7 +168,7 @@ SMALLP:          SUB [SI],87
                  JMP STARP       
 STARP:           MOV AL,[SI]
                  RET
-PUTPASSINAX      ENDP
+PUTPASSINAL      ENDP
 ;--------------         
 CHECKID          PROC
                  MOV CX,21            ; Set the counter to 21 decimal
