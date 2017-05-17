@@ -17,7 +17,7 @@ DATA6 DW 0AAAAH,0BBBBH,0CCCCH,0DDDDH,0EEEEH,0FFFFH,1111H,2222H,3333H,4444H,5555H
 DATA8 DW 1H,2H,3H,4H,5H,6H,0AH,0BH,0CH,0DH,0FH,0EH,1H,2H,3H,0AH,0BH,0CH,0DH,0AH
 DATAA DB 'Your ID is wrong, Please try again!!','$' 
 DATAB DB 'ENTER YOUR PASSWORD: ','$'   
-DATAC DB 5,?,5 DUP (?)        
+DATAC DB 2,?,2 DUP (?)        
 DATAD DB 'LOGIN SUCCESSFUL!','$' 
 DATAE DB 'WRONG PASSWORD,TRY AGAIN','$'     
 DATAF DB 00H
@@ -36,12 +36,12 @@ ID:              CALL WELCOME            ;Call WELCOME
                  CALL NO.LET             ;Call NO.LET , bishof en kan elrakm ely md5lo 4 arkam wla a2l
                  CALL CHECK              ;Call CHECK , bi-check iza kan elrakm ely d5lto in range (0-->9 aw a-->f aw A-->F) wla la2
                  MOV  SI,OFFSET DATA2+2  ;Initialize SI to point to the ID data in memory
-                 CALL PUTINAX            ;Call PUTIDINAX, bt7ot el ID ely gy mn elmemory f AX 
+                 CALL PUTIDINAX          ;Call PUTINAX, bt7ot el ID ely gy mn elmemory f AX 
                  CALL CHECKID            ;Call CHECKID , bi-check 3la el ID en kan sa7 wla 3'lt
                  CALL SETCURSOR          ;Call SETCURSOR, 3mltha tany 3shan yzbt elklam ,ynzl satr gdid w kda
                  CALL GETPASS            ;Call GETPASS ,elproc di hta5od mn el user el password
                  MOV  SI,OFFSET DATAC+2  ;Initialize, SI to point to datac in memory
-                 CALL PUTINAX            ;Call PUTIDINAX, bt7ot el ID ely gy mn elmemory f AX 
+                 CALL PUTPASSINAX        ;Call PUTINAX, bt7ot el password ely gy mn elmemory f AX 
                  CALL CHECKPASS          ;Call CHECKPASS, bi-check en kan elpassword sa7 wla 3'lt
                  CALL SETCURSOR          ;Call SETCURSOR, bizbt elklam ely bizhr 3la elDOS
                  CALL ENTER              ;Call ENTER, lw elpassword sa7 bitl3lo gomla 3la elshasha
@@ -122,7 +122,7 @@ WRONGENTRY       PROC
                  RET
 WRONGENTRY       ENDP
 ;--------------
-PUTINAX          PROC                  
+PUTIDINAX          PROC                  
                  MOV CX,04H
 AGAIN2:          CMP [SI],39H
                  JZ  ZERO
@@ -149,7 +149,26 @@ STAR:            INC SI
                  SHL AX,4
                  OR  AX,BX  
                  RET
-PUTINAX          ENDP
+PUTIDINAX          ENDP
+;--------------
+PUTPASSINAX      PROC                  
+                 CMP [SI],39H
+                 JZ  ZEROP
+                 JB  ZEROP         
+                 JA  OVERP    
+ZEROP:           SUB [SI],30H
+                 JMP STARP         
+OVERP:           CMP [SI],70
+                 JZ  CAPITALP
+                 JB  CAPITALP
+                 JA  SMALLP
+CAPITALP:        SUB [SI],55
+                 JMP STARP 
+SMALLP:          SUB [SI],87
+                 JMP STARP       
+STARP:           MOV AL,[SI]
+                 RET
+PUTPASSINAX      ENDP
 ;--------------         
 CHECKID          PROC
                  MOV CX,21            ; Set the counter to 21 decimal
@@ -181,9 +200,9 @@ GETPASS          PROC
 GETPASS          ENDP
 ;-------------
 CHECKPASS        PROC   
-                 MOV BX,AX
+                 MOV BL,AL
                  ADD DI,38            ; If exist, jump to the password which equivalent to that ID
-                 CMP BX,[DI]          ; Check if the password correct or not
+                 CMP BL,[DI]          ; Check if the password correct or not
                  JNZ WRONGPASS 
                  RET
 CHECKPASS        ENDP      
